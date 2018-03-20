@@ -1,8 +1,10 @@
-package com.example.xuchichi.mytest;
+package com.example.xuchichi.mytest.view.activity;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+
+import com.example.xuchichi.mytest.R;
 
 public class BActivity extends AppCompatActivity {
 

@@ -1,4 +1,4 @@
-package com.example.xuchichi.mytest.widget;
+package com.example.xuchichi.mytest.view.widget;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -39,8 +39,6 @@ public class LableView extends ViewGroup {
            View child=getChildAt(i);
 
            measureChild(child,widthMeasureSpec,heightMeasureSpec);
-
-
 
        }
 

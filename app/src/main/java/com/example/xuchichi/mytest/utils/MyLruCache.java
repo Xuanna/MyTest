@@ -1,4 +1,4 @@
-package com.example.xuchichi.mytest.cache;
+package com.example.xuchichi.mytest.utils;
 
 import android.graphics.Bitmap;
 import android.support.v4.util.LruCache;

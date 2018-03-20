@@ -1,51 +1,78 @@
 package com.example.xuchichi.mytest;
 
-import android.content.Intent;
-import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
+import android.widget.ImageView;
 
-import java.net.URL;
+import com.example.xuchichi.mytest.db.MySqliteHelper;
+import com.example.xuchichi.mytest.net.httpUrlConnection.HttpDownImageThread;
+import com.example.xuchichi.mytest.utils.DbManager;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity {
-    Button button;
 
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+    @BindView(R.id.iv)
+    ImageView iv;
+    @BindView(R.id.iv2)
+    ImageView iv2;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
+
+        //标题必须在support之前设置
+        //调用supportActionBar之后，menu就没用了 toolbar.inflateMenu(R.menu.menu_main);失效
+        //推荐和actionBar一起使用
+        toolbar.setTitle("Title");
+        toolbar.setSubtitle("SubTitle");
+        toolbar.setNavigationIcon(R.mipmap.ic_launcher);
+        toolbar.inflateMenu(R.menu.menu_main);
+        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.addFriend:
+                        Log.e("Log", "addFriend");
+                        break;
+                    case R.id.scan:
+                        Log.e("Log", "scan");
+                        break;
+                }
+                return true;
+            }
+        });
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.e("Log", "onclick");
+            }
+        });
+
+        Handler handlder = new Handler();
+        HttpDownImageThread thread = new HttpDownImageThread("https://pic1.zhimg.com/80/v2-47af1b232ed71db67d9ce7fcabcbf710_hd.jpg", iv, handlder);
+        HttpDownImageThread threads = new HttpDownImageThread("https://pic1.zhimg.com/80/v2-47af1b232ed71db67d9ce7fcabcbf710_hd.jpg", iv2, handlder);
+        thread.start();
+        threads.start();
+
+    }
+    public void onCreadDb(){
+        //getReadableDatabase getWritableDatabase 创建或打开数据库
+        //如果数据库存在直接打开，不存在则创建
+
+       MySqliteHelper sqliteHelper=DbManager.getInstance(this);
+       SQLiteDatabase database=sqliteHelper.getWritableDatabase();
 
     }
 
-    /**
-     * Params:表示参数的类型
-     * Progress：表示后台任务的执行进度的类型
-     * result：表示后台任务返回结果的类型
-     */
-    private class DownloadFileTask extends AsyncTask<URL,Integer,Long>{
-        //在线程池中执行，此方法用于执行异步任务，params表示异步任务的输入参数，
-        //在此方法中可以通过publishProgress方法来更新任务的进度，publishProgress方法会调用
-        //onProgressUpdate方法，另外此方法需要返回计算结果给onPostExecute（）方法
-        @Override
-        protected Long doInBackground(URL... urls) {
-            return null;
-        }
-        //在主线程中执行，在异步任务执行之前，会被调用，一般可以用于做一些准备工作
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-        //在主线程中执行，在异步任务执行之后，被调用，其中result参数是后台任务的返回值，即是doInbackground的返回值
-        @Override
-        protected void onPostExecute(Long aLong) {
-            super.onPostExecute(aLong);
-        }
-        //在主线程中执性，当后台任务的执行进度发生改变时此方法被调用
-        @Override
-        protected void onProgressUpdate(Integer... values) {
-            super.onProgressUpdate(values);
-        }
-    }
 }

@@ -1,12 +1,13 @@
-package com.example.xuchichi.mytest;
+package com.example.xuchichi.mytest.view.activity;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+
+import com.example.xuchichi.mytest.R;
 
 public class AActivity extends Activity {
     Button button;
@@ -29,6 +30,10 @@ public class AActivity extends Activity {
         });
     }
 
+    /**
+     * 异常时调用
+     * @param outState
+     */
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -41,12 +46,18 @@ public class AActivity extends Activity {
         Log.e("onRestoreInstanceState", "onRestoreInstanceState");
     }
 
+    /**
+     * 可见，但是不能获取用用户操作
+     */
     @Override
     protected void onStart() {
         super.onStart();
         Log.e("AonStart", "AonStart");
     }
 
+    /**
+     * 可见，并能于用户交互
+     */
     @Override
     protected void onResume() {
         super.onResume();
@@ -59,12 +70,18 @@ public class AActivity extends Activity {
         Log.e("AonRestart", "AonRestart");
     }
 
+    /**
+     * 可见
+     */
     @Override
     protected void onPause() {
         super.onPause();
         Log.e("AonPause", "AonPause");
     }
 
+    /**
+     * 不可见
+     */
     @Override
     protected void onStop() {
         super.onStop();
