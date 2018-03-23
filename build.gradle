@@ -21,12 +21,12 @@ allprojects {
         jcenter()
     }
 }
-project.ext{
-    applicationId="com.xxx"
-    compileSdkVersion=26
-    targetSdkVersion=26
-
-}
+//project.ext{
+//    applicationId="com.xxx"
+//    compileSdkVersion=26
+//    targetSdkVersion=26
+//
+//}
 
 task clean(type: Delete) {
     delete rootProject.buildDir

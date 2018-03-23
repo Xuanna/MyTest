@@ -1,35 +1,50 @@
 package com.example.xuchichi.mytest;
 
-import android.database.sqlite.SQLiteDatabase;
+import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
+import android.widget.Button;
 
-import com.example.xuchichi.mytest.db.MySqliteHelper;
-import com.example.xuchichi.mytest.net.httpUrlConnection.HttpDownImageThread;
-import com.example.xuchichi.mytest.utils.DbManager;
+import com.example.xuchichi.mytest.view.activity.DbActivity;
+import com.example.xuchichi.mytest.view.activity.HttpUrlConnectionActivity;
+import com.example.xuchichi.mytest.view.adapter.BaseRecycleViewAdapter;
+import com.example.xuchichi.mytest.view.adapter.MainActivityAdapter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity {
 
+    List<String> mlist=new ArrayList<>();
+
     @BindView(R.id.toolbar)
     Toolbar toolbar;
-    @BindView(R.id.iv)
-    ImageView iv;
-    @BindView(R.id.iv2)
-    ImageView iv2;
+    @BindView(R.id.btnDb)
+    Button btnDb;
+    @BindView(R.id.recycleView)
+    RecyclerView recycleView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+        init();
+        setRecycleView();
+    }
+    public void init(){
+        mlist.add("自定义流式布局");
+        mlist.add("数据库的使用");
+        mlist.add("HttpUrlConnection网络请求，并下载图片做文件缓存");
 
         //标题必须在support之前设置
         //调用supportActionBar之后，menu就没用了 toolbar.inflateMenu(R.menu.menu_main);失效
@@ -59,20 +74,28 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        Handler handlder = new Handler();
-        HttpDownImageThread thread = new HttpDownImageThread("https://pic1.zhimg.com/80/v2-47af1b232ed71db67d9ce7fcabcbf710_hd.jpg", iv, handlder);
-        HttpDownImageThread threads = new HttpDownImageThread("https://pic1.zhimg.com/80/v2-47af1b232ed71db67d9ce7fcabcbf710_hd.jpg", iv2, handlder);
-        thread.start();
-        threads.start();
-
     }
-    public void onCreadDb(){
-        //getReadableDatabase getWritableDatabase 创建或打开数据库
-        //如果数据库存在直接打开，不存在则创建
-
-       MySqliteHelper sqliteHelper=DbManager.getInstance(this);
-       SQLiteDatabase database=sqliteHelper.getWritableDatabase();
-
+    MainActivityAdapter adapter;
+    public void setRecycleView() {
+        recycleView.setLayoutManager(new LinearLayoutManager(this));
+        adapter=new MainActivityAdapter(mlist,this);
+        recycleView.setAdapter(adapter);
+        adapter.setOnItemClickListener(new BaseRecycleViewAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClickListener(View v, int position) {
+                switch (position){
+                    case 0:
+                        break;
+                    case 1:
+                        startActivity(new Intent(MainActivity.this, DbActivity.class));
+                        break;
+                    case 2:
+                        startActivity(new Intent(MainActivity.this, HttpUrlConnectionActivity.class));
+                        break;
+                }
+            }
+        });
     }
+
 
 }

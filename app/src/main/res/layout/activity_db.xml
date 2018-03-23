@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <Button
+        android:text="插入数据"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/btnInsert"/>
+    <Button
+        android:text="删除数据"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/btnDelete"/>
+    <Button
+        android:text="修改数据"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/btnUpdate"/>
+    <Button
+        android:text="查询数据"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/btnQuery"/>
+
+    <Button
+        android:id="@+id/btnLotInsert"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="批量插入"/>
+</LinearLayout>

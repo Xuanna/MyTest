@@ -3,6 +3,7 @@ package com.example.xuchichi.mytest.db;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import com.example.xuchichi.mytest.utils.Constant;
 
@@ -33,7 +34,10 @@ public class MySqliteHelper extends SQLiteOpenHelper {
      */
     @Override
     public void onCreate(SQLiteDatabase db) {
-
+//        String sqls="create table person (id Integer primary key,name varchar(10),age Integer)";
+        String sql="create table "+Constant.TABLE_NAME+" ("+Constant.ID+" Integer primary key,"+Constant.NAME+" varchar(10),"+Constant.AGE+" Integer)";
+        db.execSQL(sql);//执行sql语句
+        Log.e("onCreate","onCreate");
     }
 
     /**
@@ -44,7 +48,7 @@ public class MySqliteHelper extends SQLiteOpenHelper {
      */
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
+        Log.e("onUpgrade","onUpgrade");
     }
 
     /**
@@ -54,5 +58,6 @@ public class MySqliteHelper extends SQLiteOpenHelper {
     @Override
     public void onOpen(SQLiteDatabase db) {
         super.onOpen(db);
+        Log.e("onOpen","onOpen");
     }
 }
