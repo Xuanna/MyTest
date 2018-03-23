@@ -28,7 +28,7 @@ public abstract class BaseRecycleViewAdapter<T> extends RecyclerView.Adapter<Bas
     @Override
     public BaseViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = inflater.inflate(layoutId, null);
-        return new BaseViewHolder(view,onItemClickListener);
+        return new BaseViewHolder(view, onItemClickListener);
     }
 
     @Override
@@ -44,14 +44,68 @@ public abstract class BaseRecycleViewAdapter<T> extends RecyclerView.Adapter<Bas
 
     public abstract void setData(BaseViewHolder viewHolder, T item);
 
-    public  OnItemClickListener onItemClickListener;
+    /**
+     * 添加数据
+     *
+     * @param list
+     */
+    public void addData(List<T> list) {
+        if (list != null) {
+            for (int i = 0; i < list.size(); i++) {
+                mlist.add(list.get(i));
+            }
+            notifyItemRangeInserted(0, list.size());
+        }
 
-    public interface OnItemClickListener{
-        void onItemClickListener(View v,int position);
     }
 
-    public void setOnItemClickListener( OnItemClickListener onItemClickListener){
-        this.onItemClickListener=onItemClickListener;
+    /**
+     * 添加更多
+     *
+     * @param list
+     */
+    public void addMore(List<T> list) {
+        int begin = mlist.size();
+        if (list != null && list.size() > 0) {
+            for (int i = 0; i < list.size(); i++) {
+                mlist.add(list.get(i));
+                notifyItemInserted(i + begin);
+            }
+
+        }
+    }
+
+    /**
+     * 刷新数据
+     */
+    public void refreshData(List<T> list) {
+        if (list != null && list.size() > 0) {
+            clearData();
+            for (int i = 0; i < list.size(); i++) {
+                mlist.add(list.get(i));
+                notifyItemInserted(i);
+            }
+
+        }
+    }
+
+    /**
+     * 清除数据
+     */
+    public void clearData() {
+        mlist.clear();
+        notifyItemRangeRemoved(0, mlist.size());
+    }
+
+
+    public OnItemClickListener onItemClickListener;
+
+    public interface OnItemClickListener {
+        void onItemClickListener(View v, int position);
+    }
+
+    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
+        this.onItemClickListener = onItemClickListener;
 
     }
 

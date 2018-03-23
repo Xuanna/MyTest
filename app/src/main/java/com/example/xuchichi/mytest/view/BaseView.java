@@ -7,13 +7,4 @@ package com.example.xuchichi.mytest.view;
 
 public interface BaseView {
 
-    void showToast(String msg);
-
-    void printLog(String logStr);
-
-    void onSuccess();
-
-    void onFailed();
-
-    void onError();
 }
