@@ -48,6 +48,11 @@ public class MySqliteHelper extends SQLiteOpenHelper {
      */
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+//        "drop table if exists Constant.TABLE_DOWNLOAD_NAME"
+        String sql="create table "+Constant.TABLE_DOWNLOAD_NAME+" (_id Integer primary key autoincrement," +
+                Constant.DOWNLOAD_Id+" Integer,"+Constant.DOWNLOAD_URL+" text,"+Constant.DOWNLOAD_STRAT+" Integer,"
+                +Constant.DOWNLOAD_FINISH+" Integer)";
+       db.execSQL(sql);
         Log.e("onUpgrade","onUpgrade");
     }
 

@@ -13,6 +13,7 @@ import android.widget.Button;
 
 import com.example.xuchichi.mytest.presenter.MainPresenterImpl;
 import com.example.xuchichi.mytest.view.MainActivityView;
+import com.example.xuchichi.mytest.view.activity.BreakPointResumeActivity;
 import com.example.xuchichi.mytest.view.activity.DbActivity;
 import com.example.xuchichi.mytest.view.activity.HttpUrlConnectionActivity;
 import com.example.xuchichi.mytest.view.adapter.MainActivityAdapter;
@@ -52,6 +53,9 @@ public class MainActivity extends AppCompatActivity implements MainActivityView{
         mlist.add("自定义流式布局");
         mlist.add("数据库的使用");
         mlist.add("HttpUrlConnection网络请求，并下载图片做文件缓存");
+        mlist.add("断点续传");
+        mlist.add("仿微信语音");
+        mlist.add("地图开发");
 
         mainPresenter.setData(mlist,this);
         mainPresenter.setToolbar();
@@ -74,6 +78,9 @@ public class MainActivity extends AppCompatActivity implements MainActivityView{
                 break;
             case 2:
                 startActivity(new Intent(MainActivity.this, HttpUrlConnectionActivity.class));
+                break;
+            case 3:
+                startActivity(new Intent(MainActivity.this, BreakPointResumeActivity.class));
                 break;
         }
     }

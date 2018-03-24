@@ -23,7 +23,9 @@
         <activity android:name=".view.activity.AActivity" />
         <activity android:name=".view.activity.BActivity" />
         <activity android:name=".view.activity.DbActivity" />
-        <activity android:name=".view.activity.HttpUrlConnectionActivity"></activity>
+        <activity android:name=".view.activity.HttpUrlConnectionActivity" />
+        <activity android:name=".view.activity.BreakPointResumeActivity"/>
+        <service android:name=".service.DownLoadService"/>
     </application>
 
 </manifest>
