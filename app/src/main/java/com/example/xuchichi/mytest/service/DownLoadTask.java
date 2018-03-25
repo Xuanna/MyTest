@@ -8,7 +8,6 @@ import com.example.xuchichi.mytest.db.ThreadDao;
 import com.example.xuchichi.mytest.db.ThreadDaoImpl;
 import com.example.xuchichi.mytest.model.FileInfo;
 import com.example.xuchichi.mytest.model.ThreadInfo;
-import com.example.xuchichi.mytest.utils.ToastUtils;
 
 import java.io.File;
 import java.io.InputStream;
@@ -86,7 +85,6 @@ public class DownLoadTask {
                 intent=new Intent(DownLoadService.ACTION_UPDATE);
 
                 finished+=threadInfo.getFinish();
-                Log.e("code",connection.getResponseCode()+"");
                 //开始下载
                 if (connection.getResponseCode()==206){
                     Log.e("if","if");

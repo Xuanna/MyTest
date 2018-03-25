@@ -3,6 +3,10 @@ package com.example.xuchichi.mytest.view.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.Looper;
+import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -20,7 +24,6 @@ public class AActivity extends Activity {
 
 
         setContentView(R.layout.activity_a);
-
         button = findViewById(R.id.btnGO);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -28,6 +31,7 @@ public class AActivity extends Activity {
                 startActivity(new Intent(AActivity.this, AActivity.class).putExtra("time",System.currentTimeMillis()));
             }
         });
+
     }
 
     /**

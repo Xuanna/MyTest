@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -14,7 +16,10 @@ import android.widget.TextView;
 
 import com.example.xuchichi.mytest.R;
 import com.example.xuchichi.mytest.model.FileInfo;
+import com.example.xuchichi.mytest.service.DoDownThread;
 import com.example.xuchichi.mytest.service.DownLoadService;
+import com.example.xuchichi.mytest.service.GetFileMsgThread;
+import com.example.xuchichi.mytest.utils.SharePerferenceUtil;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -33,6 +38,12 @@ public class BreakPointResumeActivity extends AppCompatActivity {
     Button btStop;
     @BindView(R.id.btStart)
     Button btStart;
+    @BindView(R.id.down_progressBar)
+    ProgressBar downProgressBar;
+    @BindView(R.id.down)
+    Button down;
+    @BindView(R.id.downPause)
+    Button downPause;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +70,7 @@ public class BreakPointResumeActivity extends AppCompatActivity {
 
     }
 
-    @OnClick({R.id.btStop, R.id.btStart})
+    @OnClick({R.id.btStop, R.id.btStart, R.id.down, R.id.downPause})
     public void onViewClicked(View view) {
         Intent intent;
         switch (view.getId()) {//通过intent传递fileInfo给service
@@ -75,8 +86,25 @@ public class BreakPointResumeActivity extends AppCompatActivity {
                 intent.putExtra("fileInfo", fileInfo);
                 startService(intent);
                 break;
+            case R.id.down:
+                GetFileMsgThread loadThread = new GetFileMsgThread(fileInfo,handler);
+                loadThread.start();
+                break;
+            case R.id.downPause:
+                DoDownThread.isPause = true;
+                break;
         }
     }
+
+    Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            int p = msg.what;
+            downProgressBar.setProgress(p);
+
+        }
+    };
 
     /**
      * 更新ui的广播接收器
@@ -97,4 +125,5 @@ public class BreakPointResumeActivity extends AppCompatActivity {
         super.onDestroy();
         unregisterReceiver(broadcastReceiver);
     }
+
 }

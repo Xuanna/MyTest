@@ -2,6 +2,10 @@ package com.example.xuchichi.mytest;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.Looper;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -24,7 +28,14 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MainActivity extends AppCompatActivity implements MainActivityView{
+/**
+ * 引用程序ActivityThread创建
+ * threadLocal set get
+ * 默认创建线程mainThread--默认创建Looper（创建MessageQueue）
+ * handle关联默认创建Looper
+ */
+
+public class MainActivity extends AppCompatActivity implements MainActivityView {
 
     MainPresenterImpl mainPresenter;
 
@@ -35,7 +46,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityView{
     @BindView(R.id.recycleView)
     RecyclerView recycleView;
 
-    List<String> mlist=new ArrayList<>();
+    List<String> mlist = new ArrayList<>();
 
 
     @Override
@@ -43,12 +54,83 @@ public class MainActivity extends AppCompatActivity implements MainActivityView{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        mainPresenter=new MainPresenterImpl();
+        mainPresenter = new MainPresenterImpl();
         mainPresenter.attachView(this);
         init();
+        myThread= new MyThread();
+        myThread.start();
+        initHandleThread();
+        try{
+
+            Thread.sleep(500);
+           }catch (Exception e){
+
+                  e.printStackTrace();
+            }
+
+        myThread.handler.sendEmptyMessage(1);
+//        handler.sendEmptyMessage(2);
+//        handler2=new Handler(myThread.looper){//引用子线程中的Looper，容易导致多线程引发的空指针问题，并发
+//            @Override
+//            public void handleMessage(Message msg) {
+//                super.handleMessage(msg);
+//                Log.e("msg",msg+"");
+//            }
+//        };
+
+    }
+    Handler handler2;
+//    Handler handler=new Handler(){
+//        @Override
+//        public void handleMessage(Message msg) {
+//            super.handleMessage(msg);
+//            Log.e("ui","UI----"+Thread.currentThread()+"");
+//        }
+//    };
+    MyThread myThread;
+
+    /**
+     * 创建一个与线程相关的
+     * 创建一个与子线程相关的Looper
+     */
+    class MyThread extends Thread{
+        Handler handler;
+        Looper looper;
+        @Override
+        public void run() {
+
+            Looper.prepare();//内部会根据ThreadLocal取Looper，若没有则创建一个looper
+            looper=Looper.myLooper();
+            handler=new Handler(){
+                @Override
+                public void handleMessage(Message msg) {
+                    super.handleMessage(msg);
+                    Log.e("currentThread",Thread.currentThread()+"");
+                }
+            };
+            Looper.loop();
+
+        }
     }
 
-    public void init(){
+    HandlerThread handlerThread;
+    Handler handler3;
+    public void initHandleThread(){
+        handlerThread=new HandlerThread("Handle Thread");
+        handlerThread.start();
+        handler3=new Handler(handlerThread.getLooper()){
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                Log.e("HandlerThread",Thread.currentThread()+"");
+            }
+        };
+        handler3.sendEmptyMessage(2);
+    }
+
+//    Handler myHandle=new Handler(myThread.lo)
+
+    public void init() {
 
         mlist.add("自定义流式布局");
         mlist.add("数据库的使用");
@@ -57,10 +139,11 @@ public class MainActivity extends AppCompatActivity implements MainActivityView{
         mlist.add("仿微信语音");
         mlist.add("地图开发");
 
-        mainPresenter.setData(mlist,this);
+        mainPresenter.setData(mlist, this);
         mainPresenter.setToolbar();
 
     }
+
     @Override
     public void setAdapter(MainActivityAdapter adapter) {
         mainPresenter.startActivityOnItemClick(adapter);
@@ -70,7 +153,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityView{
 
     @Override
     public void onRecycleItemClick(int position) {
-        switch (position){
+        switch (position) {
             case 0:
                 break;
             case 1:

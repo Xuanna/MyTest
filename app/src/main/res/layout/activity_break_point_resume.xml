@@ -25,4 +25,20 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="下载" />
+    <ProgressBar
+        android:layout_marginTop="10dp"
+        android:id="@+id/down_progressBar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <Button
+        android:id="@+id/down"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="子线程断点续传" />
+    <Button
+        android:id="@+id/downPause"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="子线程断点续传暂停" />
 </LinearLayout>
