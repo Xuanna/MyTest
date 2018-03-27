@@ -1,5 +1,6 @@
 package com.example.xuchichi.mytest;
 
+import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -17,6 +18,7 @@ import android.widget.Button;
 
 import com.example.xuchichi.mytest.presenter.MainPresenterImpl;
 import com.example.xuchichi.mytest.view.MainActivityView;
+import com.example.xuchichi.mytest.view.activity.BlueToothActivity;
 import com.example.xuchichi.mytest.view.activity.BreakPointResumeActivity;
 import com.example.xuchichi.mytest.view.activity.DbActivity;
 import com.example.xuchichi.mytest.view.activity.HttpUrlConnectionActivity;
@@ -57,16 +59,16 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
         mainPresenter = new MainPresenterImpl();
         mainPresenter.attachView(this);
         init();
-        myThread= new MyThread();
+        myThread = new MyThread();
         myThread.start();
         initHandleThread();
-        try{
+        try {
 
             Thread.sleep(500);
-           }catch (Exception e){
+        } catch (Exception e) {
 
-                  e.printStackTrace();
-            }
+            e.printStackTrace();
+        }
 
         myThread.handler.sendEmptyMessage(1);
 //        handler.sendEmptyMessage(2);
@@ -79,8 +81,9 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
 //        };
 
     }
+
     Handler handler2;
-//    Handler handler=new Handler(){
+    //    Handler handler=new Handler(){
 //        @Override
 //        public void handleMessage(Message msg) {
 //            super.handleMessage(msg);
@@ -93,19 +96,20 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
      * 创建一个与线程相关的
      * 创建一个与子线程相关的Looper
      */
-    class MyThread extends Thread{
+    class MyThread extends Thread {
         Handler handler;
         Looper looper;
+
         @Override
         public void run() {
 
             Looper.prepare();//内部会根据ThreadLocal取Looper，若没有则创建一个looper
-            looper=Looper.myLooper();
-            handler=new Handler(){
+            looper = Looper.myLooper();
+            handler = new Handler() {
                 @Override
                 public void handleMessage(Message msg) {
                     super.handleMessage(msg);
-                    Log.e("currentThread",Thread.currentThread()+"");
+                    Log.e("currentThread", Thread.currentThread() + "");
                 }
             };
             Looper.loop();
@@ -115,14 +119,15 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
 
     HandlerThread handlerThread;
     Handler handler3;
-    public void initHandleThread(){
-        handlerThread=new HandlerThread("Handle Thread");
+
+    public void initHandleThread() {
+        handlerThread = new HandlerThread("Handle Thread");
         handlerThread.start();
-        handler3=new Handler(handlerThread.getLooper()){
+        handler3 = new Handler(handlerThread.getLooper()) {
             @Override
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
-                Log.e("HandlerThread",Thread.currentThread()+"");
+                Log.e("HandlerThread", Thread.currentThread() + "");
             }
         };
         handler3.sendEmptyMessage(2);
@@ -136,6 +141,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
         mlist.add("数据库的使用");
         mlist.add("HttpUrlConnection网络请求，并下载图片做文件缓存");
         mlist.add("断点续传");
+        mlist.add("蓝牙操作");
         mlist.add("仿微信语音");
         mlist.add("地图开发");
 
@@ -164,6 +170,9 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
                 break;
             case 3:
                 startActivity(new Intent(MainActivity.this, BreakPointResumeActivity.class));
+                break;
+            case 4:
+                startActivity(new Intent(MainActivity.this, BlueToothActivity.class));
                 break;
         }
     }

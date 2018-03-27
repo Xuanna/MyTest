@@ -144,7 +144,9 @@ public abstract class BaseActivity extends AppCompatActivity {
             Manifest.permission.READ_EXTERNAL_STORAGE
     };
     int requestCode=1;
+
     /**
+     * Android 6.0上对应用权限进行授权是发生在应用运行时，而不是在安装时
      * 申请权限 Sd卡的读取
      *
      */
