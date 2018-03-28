@@ -1,6 +1,5 @@
 package com.example.xuchichi.mytest;
 
-import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -18,7 +17,7 @@ import android.widget.Button;
 
 import com.example.xuchichi.mytest.presenter.MainPresenterImpl;
 import com.example.xuchichi.mytest.view.MainActivityView;
-import com.example.xuchichi.mytest.view.activity.BlueToothActivity;
+import com.example.xuchichi.mytest.view.activity.MyBluetoothActivity;
 import com.example.xuchichi.mytest.view.activity.BreakPointResumeActivity;
 import com.example.xuchichi.mytest.view.activity.DbActivity;
 import com.example.xuchichi.mytest.view.activity.HttpUrlConnectionActivity;
@@ -172,7 +171,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
                 startActivity(new Intent(MainActivity.this, BreakPointResumeActivity.class));
                 break;
             case 4:
-                startActivity(new Intent(MainActivity.this, BlueToothActivity.class));
+                startActivity(new Intent(MainActivity.this, MyBluetoothActivity.class));
                 break;
         }
     }

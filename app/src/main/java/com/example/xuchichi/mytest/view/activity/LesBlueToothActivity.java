@@ -32,7 +32,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class BlueToothActivity extends AppCompatActivity {
+public class LesBlueToothActivity extends AppCompatActivity {
 
     @BindView(R.id.tvDeviceInfo)
     TextView tvDeviceInfo;
@@ -101,6 +101,7 @@ public class BlueToothActivity extends AppCompatActivity {
 
     public void initBlueTooth() {
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        Log.e("myToothName:",bluetoothAdapter.getName());//本地蓝牙名称
         //        检测是否有蓝牙并是否开启,调用isEnabled()方法来检查蓝牙目前是否可用,未开启则尝试开启蓝牙
         if (bluetoothAdapter == null || !bluetoothAdapter.isEnabled()) {
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
