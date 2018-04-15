@@ -1,5 +1,12 @@
 # MyTest
 
+
+rxjava用法:
+componet的inject方法接受父类类型参数，而调用时传入的是子类型对象则无法注入！！！
+dagger2的单利不是java中的单利，其是依附在component的上的，不同的componet是不一样的
+
+
+
 gradle基本配置（构建编译项目）
 
 开发项目过程中，10MB的中等项目，编译时间会变久 androidStudio2.0提供一种instant run方式

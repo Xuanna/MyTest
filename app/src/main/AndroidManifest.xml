@@ -22,13 +22,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+        <activity android:name=".MainActivity"></activity>
         <activity android:name=".view.activity.AActivity" />
         <activity android:name=".view.activity.BActivity" />
         <activity android:name=".view.activity.DbActivity" />
@@ -38,7 +32,15 @@
         <service android:name=".service.DownLoadService" />
 
         <activity android:name=".view.activity.LesBlueToothActivity" />
-        <activity android:name=".view.activity.MyBluetoothActivity"/>
+        <activity android:name=".view.activity.MyBluetoothActivity" />
+        <activity android:name=".view.activity.MyDaggerActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".view.activity.LoginActivity"></activity>
     </application>
 
 </manifest>
