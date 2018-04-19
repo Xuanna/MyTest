@@ -5,12 +5,8 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Button;
 
-import com.example.xuchichi.mytest.MyApplication;
 import com.example.xuchichi.mytest.R;
 import com.example.xuchichi.mytest.di.UserManager;
-import com.example.xuchichi.mytest.di.component.DaggerUserComponent;
-import com.example.xuchichi.mytest.di.module.HttpModule;
-import com.example.xuchichi.mytest.di.module.UserModule;
 
 import javax.inject.Inject;
 
@@ -43,12 +39,12 @@ public class MyDaggerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dagger);
         ButterKnife.bind(this);
-
-        DaggerUserComponent.builder()
-                .userModule(new UserModule(this))
-                .appComponent(MyApplication.getAppComponent())
-                .build()
-                .inject(this);
+//
+//        DaggerUserComponent.builder()
+//                .userModule(new UserModule(this))
+//                .appComponent(MyApplication.getAppComponent())
+//                .build()
+//                .inject(this);
 //
 //        DaggerUserComponent.builder()
 //                .userModule(new UserModule(this))

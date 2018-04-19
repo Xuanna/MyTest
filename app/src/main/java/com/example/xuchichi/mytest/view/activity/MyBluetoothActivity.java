@@ -10,10 +10,17 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.xuchichi.mytest.R;
+import com.example.xuchichi.mytest.view.adapter.MyBluetoothAdapter;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -29,9 +36,17 @@ public class MyBluetoothActivity extends AppCompatActivity {
     Button btnStop;
     @BindView(R.id.btnConnect)
     Button btnConnect;
-    BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
     @BindView(R.id.tvBluetoothInfo)
     TextView tvBluetoothInfo;
+    @BindView(R.id.listview)
+    ListView listview;
+    @BindView(R.id.tvEmpty)
+    TextView tvEmpty;
+
+    BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+    MyBluetoothAdapter adapter;
+    List<BluetoothDevice> list = new ArrayList<>();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +59,19 @@ public class MyBluetoothActivity extends AppCompatActivity {
     public final int ACTION_REQUEST_ENABLE = 1;
 
     public void init() {
+
+        adapter = new MyBluetoothAdapter(list, this);
+        listview.setAdapter(adapter);
+        listview.setOnItemClickListener(itemClickListener);
+
+        Set<BluetoothDevice> pairedDevice = bluetoothAdapter.getBondedDevices();
+        if (pairedDevice.size() > 0) {
+            for (BluetoothDevice device : pairedDevice) {
+                list.add(device);
+                adapter.notifyDataSetChanged();
+            }
+        }
+
         if (bluetoothAdapter == null) {
             tvDeviceInfo.setText("该设备无蓝牙功能");
         }
@@ -51,7 +79,10 @@ public class MyBluetoothActivity extends AppCompatActivity {
         if (!bluetoothAdapter.isEnabled()) {
             Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(intent, ACTION_REQUEST_ENABLE);
+        } else {
+            tvEmpty.setVisibility(View.VISIBLE);
         }
+
         IntentFilter filter = new IntentFilter();
         //发现设备
         filter.addAction(BluetoothDevice.ACTION_FOUND);
@@ -72,6 +103,19 @@ public class MyBluetoothActivity extends AppCompatActivity {
         }
     }
 
+    AdapterView.OnItemClickListener itemClickListener = new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+            BluetoothDevice device = list.get(position);
+
+        }
+    };
+    /**
+     * 连接蓝牙设备
+     */
+
+
     BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -79,7 +123,15 @@ public class MyBluetoothActivity extends AppCompatActivity {
             switch (action) {
                 case BluetoothDevice.ACTION_FOUND:
                     BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                    tvDeviceInfo.setText(device.getName());
+
+                    if (device.getBondState() != BluetoothDevice.BOND_BONDED) {
+                        list.add(device);
+                        adapter.notifyDataSetChanged();
+                        Log.e("uuid:", device.getUuids() + "");
+                        tvDeviceInfo.setText(device.getUuids() + "");
+                    }
+
+
                     break;
                 case BluetoothDevice.ACTION_BOND_STATE_CHANGED:
                     break;

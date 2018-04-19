@@ -14,10 +14,10 @@ import dagger.Component;
  * 连接器 container通过Component 获取UserModule(提供实例)
  * 或者(modules = {UserModule.class,,HttpModule.class}, dependencies = HttpCompnent.class)
  */
-@ActivityScope
-@Component(modules = {UserModule.class},dependencies = AppComponent.class)
-public interface UserComponent {
-
-    void inject(MyDaggerActivity activity);//MyDaggerActivity activity不能使用父类
-
-}
+//@ActivityScope
+//@Component(modules = {UserModule.class},dependencies = AppComponent.class)
+//public interface UserComponent {
+//
+//    void inject(MyDaggerActivity activity);//MyDaggerActivity activity不能使用父类
+//
+//}

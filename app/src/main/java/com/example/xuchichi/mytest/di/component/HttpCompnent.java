@@ -8,5 +8,5 @@ import dagger.Component;
  * Created by xuchichi on 2018/4/8.
  */
 //@Component(modules =HttpModule.class)
-public class HttpCompnent {
-}
+//public class HttpCompnent {
+//}

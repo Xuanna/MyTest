@@ -12,10 +12,10 @@ import dagger.Component;
 /**
  * Created by xuchichi on 2018/4/8.
  */
-@ActivityScope
-@Component(modules = {UserModule.class},dependencies = AppComponent.class)
-public interface LoginComponent {
-
-    void inject(LoginActivity activity);
-
-}
+//@ActivityScope
+//@Component(modules = {UserModule.class},dependencies = AppComponent.class)
+//public interface LoginComponent {
+//
+//    void inject(LoginActivity activity);
+//
+//}

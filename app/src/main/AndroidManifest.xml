@@ -32,13 +32,15 @@
         <service android:name=".service.DownLoadService" />
 
         <activity android:name=".view.activity.LesBlueToothActivity" />
-        <activity android:name=".view.activity.MyBluetoothActivity" />
-        <activity android:name=".view.activity.MyDaggerActivity">
+        <activity android:name=".view.activity.MyBluetoothActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity android:name=".view.activity.MyDaggerActivity">
+
         </activity>
         <activity android:name=".view.activity.LoginActivity"></activity>
     </application>
