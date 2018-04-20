@@ -5,6 +5,17 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    <!--相机-->
+    <uses-permission android:name="android.permission.CAMERA" />
+    <!--两个特性声明 这两个声明是可选的，它们用于应用商店（Google Play）过滤不支持相机和不支持自动对焦的设备-->
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="true" />
+    <uses-feature
+        android:name="android.hardware.camera.autofocus"
+        android:required="false" />
+    <!--蓝牙-->
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <!-- 使用扫描和设置蓝牙的权限（申明这一个权限必须申明上面一个权限） -->
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
@@ -22,7 +33,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity"></activity>
+        <activity android:name=".MainActivity" />
         <activity android:name=".view.activity.AActivity" />
         <activity android:name=".view.activity.BActivity" />
         <activity android:name=".view.activity.DbActivity" />
@@ -33,16 +44,17 @@
 
         <activity android:name=".view.activity.LesBlueToothActivity" />
         <activity android:name=".view.activity.MyBluetoothActivity">
+
+        </activity>
+        <activity android:name=".view.activity.MyDaggerActivity"></activity>
+        <activity android:name=".view.activity.LoginActivity" />
+        <activity android:name=".view.activity.CameraActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".view.activity.MyDaggerActivity">
-
-        </activity>
-        <activity android:name=".view.activity.LoginActivity"></activity>
     </application>
 
 </manifest>
