@@ -20,7 +20,7 @@
         android:required="false" />
     <uses-feature
         android:name="android.hardware.camera.autofocus"
-        android:required="false" />
+        android:required="true" />
     <!--蓝牙-->
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <!-- 使用扫描和设置蓝牙的权限（申明这一个权限必须申明上面一个权限） -->
