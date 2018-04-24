@@ -20,12 +20,11 @@ import butterknife.OnClick;
 
 public class CameraActivity extends AppCompatActivity implements SurfaceHolder.Callback {
 
+    Camera mCamera;
     @BindView(R.id.surfaceView)
     SurfaceView surfaceView;
     @BindView(R.id.btn_take_photo)
     Button btnTakePhoto;
-
-    Camera mCamera;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
