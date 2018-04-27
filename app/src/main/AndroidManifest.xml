@@ -50,16 +50,16 @@
 
         <activity android:name=".view.activity.LesBlueToothActivity" />
         <activity android:name=".view.activity.MyBluetoothActivity">
-
-        </activity>
-        <activity android:name=".view.activity.MyDaggerActivity"></activity>
-        <activity android:name=".view.activity.LoginActivity" />
-        <activity android:name=".view.activity.CameraActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity android:name=".view.activity.MyDaggerActivity"></activity>
+        <activity android:name=".view.activity.LoginActivity" />
+        <activity android:name=".view.activity.CameraActivity">
+
         </activity>
     </application>
 
