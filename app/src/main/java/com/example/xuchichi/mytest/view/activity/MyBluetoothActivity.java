@@ -91,7 +91,7 @@ public class MyBluetoothActivity extends AppCompatActivity {
         listview.setOnItemClickListener(itemClickListener);
 
         Set<BluetoothDevice> pairedDevice = bluetoothAdapter.getBondedDevices();
-        if (pairedDevice.size() > 0) {
+        if (pairedDevice!=null&&pairedDevice.size() > 0) {
             for (BluetoothDevice device : pairedDevice) {
                 list.add(device);
                 adapter.notifyDataSetChanged();

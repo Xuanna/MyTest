@@ -15,6 +15,7 @@ import com.example.xuchichi.mytest.view.activity.MyBluetoothActivity;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.Method;
 import java.util.UUID;
 
 /**
@@ -300,26 +301,34 @@ public class MyBluetoothService {
             mAdapter.cancelDiscovery();
             // Make a connection to the BluetoothSocket
             try {
+                Method m = mBluetoothDevice.getClass().getMethod("createRfcommSocket", new Class[]{int.class});
+                socket = (BluetoothSocket) m.invoke(mBluetoothDevice, 1);
                 socket.connect();
-                Log.e("socket", "Connected");
-            } catch (IOException e) {
-                Log.e("socketIOException", e.getMessage());
-                try {
-                    Log.e("", "trying fallback...");
+            } catch (Exception e) {
 
-                    socket = (BluetoothSocket) mBluetoothDevice.getClass().getMethod("createRfcommSocket", new Class[]{int.class})
-                            .invoke(mBluetoothDevice, 1);
-                    socket.connect();
-
-                    Log.e("Connected", "Connected");
-                } catch (Exception e2) {
-                    Log.e("e2", "Couldn't establish Bluetooth connection!");
-                    connectionFailed(mBluetoothDevice);
-                }
-                MyBluetoothService.this.start();// 引用来说明要调用的是外部类的方法 run
-                //连接失败
-                return;
+                e.printStackTrace();
             }
+//            try {
+//                socket.connect();
+//                Log.e("socket", "Connected");
+//            } catch (IOException e) {
+//                Log.e("socketIOException", e.getMessage());
+//                try {
+//                    Log.e("", "trying fallback...");
+//
+//                    socket = (BluetoothSocket) mBluetoothDevice.getClass().getMethod("createRfcommSocket", new Class[]{int.class})
+//                            .invoke(mBluetoothDevice, 1);
+//                    socket.connect();
+//
+//                    Log.e("Connected", "Connected");
+//                } catch (Exception e2) {
+//                    Log.e("e2", "Couldn't establish Bluetooth connection!");
+//                    connectionFailed(mBluetoothDevice);
+//                }
+//                MyBluetoothService.this.start();// 引用来说明要调用的是外部类的方法 run
+//                //连接失败
+//                return;
+//            }
 //            try {
 //                // This is a blocking call and will only return on a
 //                // successful connection or an exception
