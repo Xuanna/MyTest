@@ -27,7 +27,7 @@ public class MyBluetoothService {
     private static final String TAG = "MyBluetoothService";
 
     private static final UUID MY_UUID =
-            UUID.fromString("00001000-0000-1000-8000-00805F9B34FB");
+            UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
     // Name for the SDP record when creating server socket
     private static final String NAME = "BluetoothSecure";
 
@@ -69,34 +69,22 @@ public class MyBluetoothService {
         setState(STATE_LISTEN);
     }
 
-//    /**
-//     * 开启服务端
-//     * Start the chat service. Specifically start AcceptThread to begin a
-//     * session in listening (server) mode. Called by the Activity onResume()
-//     */
-//    public synchronized void start() {
-//        Log.e(TAG, "start");
-//
-//        // Cancel any thread attempting to make a connection
-//        if (mConnectThread != null) {
-//            mConnectThread.cancel();
-//            mConnectThread = null;
-//        }
-//
-//        // Cancel any thread currently running a connection
-//        if (mConnectedThread != null) {
-//            mConnectedThread.cancel();
-//            mConnectedThread = null;
-//        }
-//
-//        // Start the thread to listen on a BluetoothServerSocket
-//        if (acceptThread == null) {
-//            acceptThread = new AcceptThread();
-//            acceptThread.start();
-//        }
-//        // Update UI title
-//        updateUserInterfaceTitle();
-//    }
+    /**
+     * 写数据
+     *
+     * @param out
+     */
+    public void write(byte[] out) {
+        // Create temporary object
+        ConnectedThread r;
+        // Synchronize a copy of the ConnectedThread
+        synchronized (this) {
+            if (mState != STATE_CONNECTED) return;
+            r = mConnectedThread;
+        }
+        // Perform the write unsynchronized
+        r.wirte(out);
+    }
 
     /**
      * 设备连接
@@ -181,7 +169,7 @@ public class MyBluetoothService {
 
             try {
 
-                tmp = mAdapter.listenUsingRfcommWithServiceRecord(NAME, MY_UUID);
+                tmp = mAdapter.listenUsingInsecureRfcommWithServiceRecord(NAME, MY_UUID);//listenUsingRfcommWithServiceRecord
             } catch (Exception e) {
                 Log.e(TAG, "listen failed", e);
                 e.printStackTrace();
@@ -215,22 +203,23 @@ public class MyBluetoothService {
                         if (socket != null) {
                             Log.e(TAG, "server socket not null");
                             synchronized (MyBluetoothService.this) {
-                                switch (mState) {
-                                    case STATE_LISTEN:
-                                    case STATE_CONNECTING:
-                                        // Situation normal. Start the connected thread.
-                                        connected(socket, socket.getRemoteDevice());
-                                        break;
-                                    case STATE_NONE:
-                                    case STATE_CONNECTED:
-                                        // Either not ready or already connected. Terminate new socket.
-                                        try {
-                                            socket.close();
-                                        } catch (IOException e) {
-                                            Log.e(TAG, "Could not close unwanted socket", e);
-                                        }
-                                        break;
-                                }
+                                connected(socket, socket.getRemoteDevice());
+//                                switch (mState) {
+//                                    case STATE_LISTEN:
+//                                    case STATE_CONNECTING:
+//                                        // Situation normal. Start the connected thread.
+//                                        connected(socket, socket.getRemoteDevice());
+//                                        break;
+//                                    case STATE_NONE:
+//                                    case STATE_CONNECTED:
+//                                        // Either not ready or already connected. Terminate new socket.
+//                                        try {
+//                                            socket.close();
+//                                        } catch (IOException e) {
+//                                            Log.e(TAG, "Could not close unwanted socket", e);
+//                                        }
+//                                        break;
+//                                }
                             }
                         }
                     }
@@ -285,7 +274,7 @@ public class MyBluetoothService {
 
             BluetoothSocket tmp = null;
             try {
-                tmp = mBluetoothDevice.createRfcommSocketToServiceRecord(MY_UUID);
+                tmp = mBluetoothDevice.createInsecureRfcommSocketToServiceRecord(MY_UUID);//createRfcommSocketToServiceRecord
 
             } catch (Exception e) {
                 Log.e(TAG, "create failed", e);
@@ -296,39 +285,35 @@ public class MyBluetoothService {
 
         @Override
         public void run() {
-            setName("ConnectThread");
-            // Always cancel discovery because it will slow down a connection
-            mAdapter.cancelDiscovery();
-            // Make a connection to the BluetoothSocket
             try {
-                Method m = mBluetoothDevice.getClass().getMethod("createRfcommSocket", new Class[]{int.class});
-                socket = (BluetoothSocket) m.invoke(mBluetoothDevice, 1);
                 socket.connect();
-            } catch (Exception e) {
-
-                e.printStackTrace();
-            }
-//            try {
-//                socket.connect();
-//                Log.e("socket", "Connected");
-//            } catch (IOException e) {
-//                Log.e("socketIOException", e.getMessage());
+                Log.e("socket", "Connected");
+            } catch (IOException e) {
+                Log.e("socketIOException", e.getMessage());
 //                try {
 //                    Log.e("", "trying fallback...");
-//
+////
 //                    socket = (BluetoothSocket) mBluetoothDevice.getClass().getMethod("createRfcommSocket", new Class[]{int.class})
 //                            .invoke(mBluetoothDevice, 1);
 //                    socket.connect();
-//
+
 //                    Log.e("Connected", "Connected");
 //                } catch (Exception e2) {
-//                    Log.e("e2", "Couldn't establish Bluetooth connection!");
-//                    connectionFailed(mBluetoothDevice);
+                Log.e("e2", "Couldn't establish Bluetooth connection!");
+                try {
+
+                    socket.close();
+                } catch (Exception es) {
+
+                    es.printStackTrace();
+                }
+
+                connectionFailed(mBluetoothDevice);
 //                }
-//                MyBluetoothService.this.start();// 引用来说明要调用的是外部类的方法 run
-//                //连接失败
-//                return;
-//            }
+                MyBluetoothService.this.start();// 引用来说明要调用的是外部类的方法 run
+                //连接失败
+                return;
+            }
 //            try {
 //                // This is a blocking call and will only return on a
 //                // successful connection or an exception
@@ -412,8 +397,9 @@ public class MyBluetoothService {
                             .sendToTarget();
 
                 } catch (Exception e) {
-
+                    Log.e(TAG, "read failed", e);
                     e.printStackTrace();
+
                 }
 
             }

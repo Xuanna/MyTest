@@ -6,6 +6,7 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCallback;
 import android.bluetooth.BluetoothGattCharacteristic;
+import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothProfile;
 import android.content.Context;
 import android.content.Intent;
@@ -13,20 +14,20 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.HandlerThread;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.xuchichi.mytest.R;
-import com.example.xuchichi.mytest.utils.ToastUtils;
+import com.example.xuchichi.mytest.view.adapter.MyBluetoothAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -38,6 +39,14 @@ public class LesBlueToothActivity extends AppCompatActivity {
     TextView tvDeviceInfo;
     @BindView(R.id.btnStop)
     Button btnStop;
+    @BindView(R.id.btnScan)
+    Button btnScan;
+    @BindView(R.id.btnConnect)
+    Button btnConnect;
+    @BindView(R.id.listview)
+    ListView listview;
+    @BindView(R.id.tvEmpty)
+    TextView tvEmpty;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +86,7 @@ public class LesBlueToothActivity extends AppCompatActivity {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.btnScan:
+                Log.e("click", "click");
                 //扫描设备,一旦发现设备会不断回调callback  外围设备开启蓝牙后，会广播发出一些信息
                 bluetoothAdapter.startLeScan(callback);
                 break;
@@ -86,8 +96,7 @@ public class LesBlueToothActivity extends AppCompatActivity {
                 break;
             case R.id.btnConnect:
                 //连接
-                BluetoothDevice device=deviceList.get(0);
-                connectDevice(getApplicationContext(),device);
+
                 break;
         }
     }
@@ -97,17 +106,19 @@ public class LesBlueToothActivity extends AppCompatActivity {
     public final int SCAN_PERIOD = 5000;
     BluetoothAdapter bluetoothAdapter;
     BluetoothAdapter.LeScanCallback callback;
-    List<BluetoothDevice> deviceList;
+    List<BluetoothDevice> deviceList = new ArrayList<>();
+    MyBluetoothAdapter adapter;
 
     public void initBlueTooth() {
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        Log.e("myToothName:",bluetoothAdapter.getName());//本地蓝牙名称
         //        检测是否有蓝牙并是否开启,调用isEnabled()方法来检查蓝牙目前是否可用,未开启则尝试开启蓝牙
         if (bluetoothAdapter == null || !bluetoothAdapter.isEnabled()) {
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
         }
-
+        adapter = new MyBluetoothAdapter(deviceList, this);
+        listview.setAdapter(adapter);
+        listview.setOnItemClickListener(onItemClickListener);
         //扫描全部蓝牙设备。
         //bluetoothAdapter.startLeScan(BluetoothAdapter.LeScanCallback callback)
         //只扫描含有特定的UUID Service 的蓝牙设备
@@ -119,23 +130,23 @@ public class LesBlueToothActivity extends AppCompatActivity {
             // scanRecord 蓝牙广播出来的广告数据。
             @Override
             public void onLeScan(BluetoothDevice device, int rssi, byte[] scanRecord) {
-               deviceList = new ArrayList<>();
-                if (device != null) {
+                if (!deviceList.contains(device)) {
+                    Log.e("scan", "scan");
                     deviceList.add(device);
+                    adapter.notifyDataSetChanged();
                 }
-                if (deviceList.size() > 0) {
-                    for (BluetoothDevice devices : deviceList) {
-                        tvDeviceInfo.setText("设备名称：" + devices.getName());
-                    }
-                } else {
-                    tvDeviceInfo.setText("未连接到设备");
-                }
-
-
             }
         };
 
     }
+
+    AdapterView.OnItemClickListener onItemClickListener = new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            BluetoothDevice device = deviceList.get(position);
+            connectDevice(getApplicationContext(), device);
+        }
+    };
 
     boolean mScanning;
     Handler mHandler = new Handler();
@@ -188,7 +199,11 @@ public class LesBlueToothActivity extends AppCompatActivity {
              */
             @Override
             public void onConnectionStateChange(BluetoothGatt gatt, int status, int newState) {
-                Log.e("Connection","status!!!="+status+"=newState="+newState);
+                Log.e("Connection", "status!!!=" + status + "=newState=" + newState);
+                if (newState == BluetoothProfile.STATE_CONNECTED) {
+                    gatt.discoverServices(); //执行到这里其实蓝牙已经连接成功了
+                    Log.i("", "Connected to GATT server.");
+                }
             }
 
             /**
@@ -198,17 +213,58 @@ public class LesBlueToothActivity extends AppCompatActivity {
              */
             @Override
             public void onServicesDiscovered(BluetoothGatt gatt, int status) {
-                Log.e("onServicesDiscovered","yeah!!!");
+                Log.e("onServicesDiscovered", "yeah!!!");
+                //成功发现服务后可以调用相应方法得到该BLE设备的所有服务，并且打印每一个服务的UUID和每个服务下各个特征的UUID
+                if (status == BluetoothGatt.GATT_SUCCESS) {
+                    List<BluetoothGattService> supportedGattServices = gatt.getServices();
+                    for (int i = 0; i < supportedGattServices.size(); i++) {
+                        Log.e("AAAAA", "1:BluetoothGattService UUID=:" + supportedGattServices.get(i).getUuid());
+                        List<BluetoothGattCharacteristic> listGattCharacteristic = supportedGattServices.get(i).getCharacteristics();
+                        for (int j = 0; j < listGattCharacteristic.size(); j++) {
+
+                            BluetoothGattCharacteristic characteristic = listGattCharacteristic.get(i);
+
+                            int charaProp = characteristic.getProperties();
+                            if ((charaProp & BluetoothGattCharacteristic.PROPERTY_READ) > 0) {
+                                Log.e("read", "Read");
+                            }
+                            if ((charaProp & BluetoothGattCharacteristic.PROPERTY_WRITE) > 0) {
+                                Log.e("PROPERTY_WRITE", "PROPERTY_WRITE");
+                            }
+                            if ((charaProp & BluetoothGattCharacteristic.PROPERTY_WRITE_NO_RESPONSE) > 0) {
+                                Log.e("writeNoResponse", "PROPERTY_WRITE_NO_RESPONSE");
+                            }
+                            if ((charaProp & BluetoothGattCharacteristic.PROPERTY_NOTIFY) > 0) {
+                                Log.e("PROPERTY_NOTIFY", "PROPERTY_NOTIFY");
+                            }
+                            if ((charaProp & BluetoothGattCharacteristic.PROPERTY_INDICATE) > 0) {
+                                Log.e("PROPERTY_INDICATE", "PROPERTY_INDICATE");
+                            }
+                            Log.e("a", "2:   BluetoothGattCharacteristic UUID=:" + listGattCharacteristic.get(j).getUuid());
+                        }
+                    }
+                } else {
+                    Log.e("AAAAA", "onservicesdiscovered收到: " + status);
+                }
             }
 
             @Override
             public void onCharacteristicRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
                 super.onCharacteristicRead(gatt, characteristic, status);
+                if (status == BluetoothGatt.GATT_SUCCESS) {
+                    Log.e("", "读取成功" + characteristic.getValue());
+                }
+                Log.e("onCharacteristicRead", "yeah!!!");
             }
 
             @Override
             public void onCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
                 super.onCharacteristicWrite(gatt, characteristic, status);
+                if (status == BluetoothGatt.GATT_SUCCESS) {
+                    Log.e("", "写入成功" + characteristic.getValue());
+                }
+
+                Log.e("onCharacteristicWrite", "yeah!!!");
             }
         });
     }

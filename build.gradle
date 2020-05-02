@@ -18,12 +18,14 @@ allprojects {
     repositories {
         google()
         jcenter()
+        mavenCentral()
+        maven { url 'http://maven.microblink.com' }
     }
 }
 ext {
     buildToolsVersion = '26.0.2'
     compileSdkVersion = 26
-    minSdkVersion = 15
+    minSdkVersion = 19
     targetSdkVersion = 26
     supportLibraryVersion = '26.0.2'
 }

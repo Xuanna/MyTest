@@ -1,5 +1,6 @@
 package com.example.xuchichi.mytest;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -17,6 +18,7 @@ import android.widget.Button;
 
 import com.example.xuchichi.mytest.presenter.MainPresenterImpl;
 import com.example.xuchichi.mytest.view.MainActivityView;
+import com.example.xuchichi.mytest.view.activity.CustomerActivity;
 import com.example.xuchichi.mytest.view.activity.MyBluetoothActivity;
 import com.example.xuchichi.mytest.view.activity.BreakPointResumeActivity;
 import com.example.xuchichi.mytest.view.activity.DbActivity;
@@ -36,7 +38,7 @@ import butterknife.ButterKnife;
  * handle关联默认创建Looper
  */
 
-public class MainActivity extends AppCompatActivity implements MainActivityView {
+public class MainActivity extends Activity implements MainActivityView {
 
     MainPresenterImpl mainPresenter;
 
@@ -60,6 +62,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
         init();
         myThread = new MyThread();
         myThread.start();
+
         initHandleThread();
         try {
 
@@ -68,7 +71,14 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
 
             e.printStackTrace();
         }
-
+        hhHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                Message msg = new Message();
+                msg.what = 1;
+                hhHandler.sendMessage(msg);
+            }
+        });
         myThread.handler.sendEmptyMessage(1);
 //        handler.sendEmptyMessage(2);
 //        handler2=new Handler(myThread.looper){//引用子线程中的Looper，容易导致多线程引发的空指针问题，并发
@@ -82,6 +92,12 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
     }
 
     Handler handler2;
+    Handler hhHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+        }
+    };
     //    Handler handler=new Handler(){
 //        @Override
 //        public void handleMessage(Message msg) {
@@ -160,6 +176,7 @@ public class MainActivity extends AppCompatActivity implements MainActivityView 
     public void onRecycleItemClick(int position) {
         switch (position) {
             case 0:
+                startActivity(new Intent(MainActivity.this, CustomerActivity.class));
                 break;
             case 1:
                 startActivity(new Intent(MainActivity.this, DbActivity.class));

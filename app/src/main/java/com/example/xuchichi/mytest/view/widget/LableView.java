@@ -82,7 +82,7 @@ public class LableView extends ViewGroup {
             int childHeight = child.getMeasuredHeight() + lp.topMargin + lp.bottomMargin;
 
             //换行
-            if (lineWidth + childHeight > sizeWidth) {
+            if (lineWidth + childWidth > sizeWidth) {
                 //对比得到最大的宽度
                 width = Math.max(lineWidth, width);
                 //重置lineWidth
@@ -101,6 +101,7 @@ public class LableView extends ViewGroup {
                 height += lineHeight;
             }
         }
+
         setMeasuredDimension(modeWidth == MeasureSpec.AT_MOST ? width : sizeWidth, modeHeight == MeasureSpec.AT_MOST ? height : sizeHeight);
     }
 
@@ -166,12 +167,32 @@ public class LableView extends ViewGroup {
         /**
          * 设置子view的位置
          */
-        int left;
-        int top;
+        int left=0;
+        int top=0;
         int lineNumber=mAllViews.size();
         for (int i = 0; i < lineNumber; i++) {
-           View view= lineViews.get(i);
-           lineHeight=mLineHeight.get(i);
+            //当前行的views和高度
+            lineViews = mAllViews.get(i);
+            lineHeight = mLineHeight.get(i);
+            for (int j = 0; j < lineViews.size(); i++) {
+
+                View child = lineViews.get(j);
+                //判断是否显示
+                if (child.getVisibility() == View.GONE) {
+                    continue;
+                }
+                MarginLayoutParams lp = (MarginLayoutParams) child.getLayoutParams();
+                int cLeft = left + lp.leftMargin;
+                int cTop = top + lp.topMargin;
+                int cRight = cLeft + child.getMeasuredWidth();
+                int cBottom = cTop + child.getMeasuredHeight();
+                //进行子View进行布局
+                child.layout(cLeft, cTop, cRight, cBottom);
+
+                left += child.getMeasuredWidth() + lp.leftMargin + lp.rightMargin;
+            }
+            left = 0;
+            top += lineHeight;
         }
 
 
@@ -179,9 +200,15 @@ public class LableView extends ViewGroup {
 
     /**
      * 与当前viewgroup对应的LayoutParams
+     *  /**
+     * （控件与控件之间的距离外边距margin）
+     * 在原生的viewgroup里是不支持margin的，需要让viewgroup去认识这个标签
+     * viewgroup里有两个内部类分别是
+     * ViewGroup.LayoutParams和ViewGroup.MarginLayoutParams
      *
      * @param attrs
      * @return
+     *
      */
     @Override
     public LayoutParams generateLayoutParams(AttributeSet attrs) {
